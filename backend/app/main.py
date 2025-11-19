@@ -5,14 +5,14 @@ from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.core.database import connect_to_mongo, close_mongo_connection
 from app.api.v1 import uploads, jobs
+from app.routes import video_censor  # import route video_censor
 
+# lifespan สำหรับ startup/shutdown MongoDB
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
-    await connect_to_mongo()
+    await connect_to_mongo()   # เชื่อม MongoDB ตอน startup
     yield
-    # Shutdown
-    await close_mongo_connection()
+    await close_mongo_connection()  # ปิด connection ตอน shutdown
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -40,6 +40,13 @@ app.include_router(
     jobs.router,
     prefix=f"{settings.API_V1_PREFIX}/jobs",
     tags=["jobs"]
+)
+
+# Include video-censor router
+app.include_router(
+    video_censor.router,
+    prefix=f"{settings.API_V1_PREFIX}/video-censor",
+    tags=["video-censor"]
 )
 
 @app.get("/")
