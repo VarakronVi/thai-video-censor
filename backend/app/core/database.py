@@ -3,7 +3,7 @@ from app.core.config import settings
 
 class Database:
     client: AsyncIOMotorClient = None
-    
+
 db = Database()
 
 async def connect_to_mongo():

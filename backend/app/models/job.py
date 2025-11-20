@@ -10,8 +10,10 @@ class JobBase(BaseModel):
     mode: CensorMode = "beep"
     language: str = "th"
 
+from typing import Optional
+
 class JobCreate(JobBase):
-    pass
+    user_id: Optional[str] = None   # <--- เพิ่ม Optional
 
 class JobInDB(JobBase):
     id: str = Field(alias="_id")
