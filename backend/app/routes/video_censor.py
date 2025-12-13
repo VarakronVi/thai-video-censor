@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
-from typing import List, Optional
+from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 from app.core.database import get_database
 
@@ -22,7 +22,6 @@ def serialize_doc(doc: dict) -> dict:
     if _id is not None:
         out["id"] = str(_id)
         out.pop("_id", None)
-    # ถ้ามี datetime แบบ BSON ให้แปลง (บางครั้งเป็น datetime)
     for k, v in list(out.items()):
         if hasattr(v, "isoformat"):
             out[k] = v.isoformat()
@@ -45,6 +44,7 @@ async def create_job(payload: JobCreate):
         "mode": payload.mode,
         "language": payload.language,
         "status": "queued",
+        "result_key": None,            # ✅ เตรียมไว้รอ worker
         "created_at": now,
         "updated_at": now,
         "error_message": None,
@@ -65,3 +65,33 @@ async def get_job(job_id: str):
     if not doc:
         raise HTTPException(status_code=404, detail="job not found")
     return {"job": serialize_doc(doc)}
+
+# 🔧 mock endpoint แทน worker (ไว้ทดสอบ result_key)
+@router.post("/{job_id}/mock-result", response_model=dict)
+async def mock_result(job_id: str):
+    from bson import ObjectId
+    db = get_database()
+    try:
+        oid = ObjectId(job_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="invalid job id")
+
+    result_key = f"results/{job_id}_censored.mp4"
+    now = datetime.utcnow()
+
+    result = await db.jobs.update_one(
+        {"_id": oid},
+        {
+            "$set": {
+                "status": "ready",
+                "result_key": result_key,
+                "updated_at": now,
+            }
+        }
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="job not found")
+
+    updated = await db.jobs.find_one({"_id": oid})
+    return {"job": serialize_doc(updated)}
