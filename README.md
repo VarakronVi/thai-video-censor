@@ -150,12 +150,12 @@ npm run dev
 
 ## 👥 Team — Project Group I04
 
-| Name | Student ID |
-|---|---|
-| **Varakron Vimolgarnjana** |
-| Sirapobe Parinyarat |
-| Wilasinee Sornwilai |
-| Supakrit Kositwiwat |
+| Name 
+|---
+| **Varakron Vimolgarnjana** 
+| Sirapobe Parinyarat 
+| Wilasinee Sornwilai 
+| Supakrit Kositwiwat 
 
 ---
 
