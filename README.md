@@ -152,12 +152,10 @@ npm run dev
 
 | Name | Student ID |
 |---|---|
-| **Varakron Vimolgarnjana** | 68070503452 |
-| Sirapobe Parinyarat | 68070503483 |
-| Wilasinee Sornwilai | 68070503454 |
-| Supakrit Kositwiwat | 68070503491 |
-
-*TA: Alom, Martin, Posh*
+| **Varakron Vimolgarnjana** |
+| Sirapobe Parinyarat |
+| Wilasinee Sornwilai |
+| Supakrit Kositwiwat |
 
 ---
 
